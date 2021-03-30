@@ -181,6 +181,12 @@ public class ColorController implements Initializable {
         canvasWhiteBoard.addEventHandler(MouseEvent.MOUSE_RELEASED, event -> {
 
                     });
+
+        checkBoxEraser.selectedProperty().addListener((observableValue, oldValue, newValue) -> {
+
+            isEraser = newValue;
+            updateCanvasPaint();
+        });
     }
 
     private void update() {
@@ -208,10 +214,26 @@ public class ColorController implements Initializable {
     }
 
     private void updateCanvasPaint() {
-        if(isEraser) return;
 
-        javafx.scene.paint.Color colorCanvas = new javafx.scene.paint.Color(color.getRed() / 255D, color.getGreen() / 255D, color.getBlue() / 255D, 1);
+        double paintColorRed;
+        double paintColorGreen;
+        double paintColorBlue;
+
+        if(isEraser) {
+            paintColorRed = 1;
+            paintColorGreen = 1;
+            paintColorBlue = 1;
+
+        } else {
+            paintColorRed = color.getRed() / 255D;
+            paintColorGreen = color.getGreen() / 255D;
+            paintColorBlue = color.getBlue() / 255D;
+        }
+
+        javafx.scene.paint.Color colorCanvas = new javafx.scene.paint.Color(paintColorRed, paintColorGreen, paintColorBlue, 1);
+
         gc = canvasWhiteBoard.getGraphicsContext2D();
+
         gc.setFill(colorCanvas);
         gc.setStroke(colorCanvas);
         gc.setLineWidth(5);
