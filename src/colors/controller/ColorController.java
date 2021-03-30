@@ -1,18 +1,27 @@
 package colors.controller;
 
 import colors.model.Color;
-import javafx.event.EventHandler;
+import javafx.embed.swing.SwingFXUtils;
+
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
+import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Paint;
+import javafx.stage.FileChooser;
 
+
+import javax.imageio.ImageIO;
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.regex.Matcher;
@@ -21,6 +30,9 @@ import java.util.regex.Pattern;
 public class ColorController implements Initializable {
 
     private Color color;
+
+    @FXML
+    private AnchorPane anchorPaneMain;
 
     // View Fields
     @FXML
@@ -57,6 +69,14 @@ public class ColorController implements Initializable {
     @FXML
     private Canvas canvasWhiteBoard;
 
+
+    @FXML
+    private MenuItem menuItemClose;
+
+    @FXML
+    private MenuItem menuItemSave;
+
+
     private GraphicsContext gc;
 
     private boolean isEraser = false;
@@ -75,9 +95,9 @@ public class ColorController implements Initializable {
         initSliderListeners();
         initTextFieldListener();
         initCanvasListener();
+        initMenuListener();
 
         gc = canvasWhiteBoard.getGraphicsContext2D();
-
 
     }
 
@@ -215,6 +235,38 @@ public class ColorController implements Initializable {
                 textFieldBrushWidth.setStyle("-fx-border-color: #FF0000");
             }
 
+        });
+    }
+
+    private void initMenuListener() {
+        menuItemClose.setOnAction(event -> {
+            System.exit(0);
+        });
+
+        menuItemSave.setOnAction(event -> {
+            SnapshotParameters sp = new SnapshotParameters();
+            gc.setFill(javafx.scene.paint.Color.TRANSPARENT);
+
+            WritableImage image = canvasWhiteBoard.snapshot(new SnapshotParameters(), null);
+
+            //Set extension filter
+            FileChooser fileChooser = new FileChooser();
+            FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("PNG files (*.png)", "*.png");
+            fileChooser.getExtensionFilters().add(extFilter);
+
+            //Show save file dialog
+            File file = fileChooser.showSaveDialog(anchorPaneMain.getScene().getWindow());
+
+            try
+            {
+                if(file == null) return;
+
+                ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);
+
+            } catch (IOException ex)
+            {
+                System.out.println(ex.toString());
+            }
         });
     }
 
