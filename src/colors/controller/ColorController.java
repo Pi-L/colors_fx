@@ -5,6 +5,9 @@ import javafx.embed.swing.SwingFXUtils;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Cursor;
+import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -12,10 +15,14 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
+import javafx.scene.effect.BoxBlur;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+
+import javafx.scene.shape.StrokeLineCap;
+import javafx.scene.shape.StrokeLineJoin;
 import javafx.stage.FileChooser;
 
 
@@ -90,7 +97,6 @@ public class ColorController implements Initializable {
         color = new Color(0, 0, 0);
 
         updateColorPane();
-        updateCanvasPaint();
 
         initSliderListeners();
         initTextFieldListener();
@@ -98,6 +104,18 @@ public class ColorController implements Initializable {
         initMenuListener();
 
         gc = canvasWhiteBoard.getGraphicsContext2D();
+
+        gc.setFill(javafx.scene.paint.Color.TRANSPARENT);
+        gc.setLineCap( StrokeLineCap.ROUND );
+        gc.setLineJoin( StrokeLineJoin.ROUND);
+
+        BoxBlur blur = new BoxBlur();
+        blur.setWidth(1);
+        blur.setHeight(1);
+        blur.setIterations(1);
+        gc.setEffect(blur);
+
+        updateCanvasPaint();
 
     }
 
@@ -127,6 +145,10 @@ public class ColorController implements Initializable {
             update();
 
         });
+
+        setupMouseType(sliderRed, Cursor.HAND);
+        setupMouseType(sliderGreen, Cursor.HAND);
+        setupMouseType(sliderBlue, Cursor.HAND);
     }
 
     private void initTextFieldListener() {
@@ -191,6 +213,7 @@ public class ColorController implements Initializable {
     }
 
     private void initCanvasListener() {
+
         canvasWhiteBoard.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> {
                         gc.beginPath();
                         gc.moveTo(event.getX(), event.getY());
@@ -202,15 +225,15 @@ public class ColorController implements Initializable {
                         gc.stroke();
                     });
 
-        canvasWhiteBoard.addEventHandler(MouseEvent.MOUSE_RELEASED, event -> {
-
-                    });
-
         checkBoxEraser.selectedProperty().addListener((observableValue, oldValue, newValue) -> {
 
             isEraser = newValue;
             updateCanvasPaint();
         });
+
+        setupMouseType(checkBoxEraser, Cursor.HAND);
+
+        setupMouseType(canvasWhiteBoard, Cursor.CROSSHAIR);
 
         textFieldBrushWidth.textProperty().addListener((observableValue, oldValue, newValue) -> {
 
@@ -232,7 +255,7 @@ public class ColorController implements Initializable {
                 update();
 
             } catch (IllegalArgumentException e) {
-                textFieldBrushWidth.setStyle("-fx-border-color: #FF0000");
+                textFieldBrushWidth.setStyle("-fx-border-color: #ff0000");
             }
 
         });
@@ -244,8 +267,6 @@ public class ColorController implements Initializable {
         });
 
         menuItemSave.setOnAction(event -> {
-            SnapshotParameters sp = new SnapshotParameters();
-            gc.setFill(javafx.scene.paint.Color.TRANSPARENT);
 
             WritableImage image = canvasWhiteBoard.snapshot(new SnapshotParameters(), null);
 
@@ -267,6 +288,20 @@ public class ColorController implements Initializable {
             {
                 System.out.println(ex.toString());
             }
+        });
+
+    }
+
+    private void setupMouseType(Node el, Cursor cursor) {
+
+        el.addEventHandler(MouseEvent.MOUSE_ENTERED, event -> {
+            Scene scene = anchorPaneMain.getScene();
+            scene.setCursor(cursor);
+        });
+
+        el.addEventHandler(MouseEvent.MOUSE_EXITED, event -> {
+            Scene scene = anchorPaneMain.getScene();
+            scene.setCursor(Cursor.DEFAULT);
         });
     }
 
@@ -313,9 +348,6 @@ public class ColorController implements Initializable {
 
         javafx.scene.paint.Color colorCanvas = new javafx.scene.paint.Color(paintColorRed, paintColorGreen, paintColorBlue, 1);
 
-        gc = canvasWhiteBoard.getGraphicsContext2D();
-
-        gc.setFill(colorCanvas);
         gc.setStroke(colorCanvas);
         gc.setLineWidth(brushWidth);
 
