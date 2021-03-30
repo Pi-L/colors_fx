@@ -1,13 +1,18 @@
 package colors.controller;
 
 import colors.model.Color;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Paint;
 
-import java.awt.event.MouseEvent;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -38,10 +43,21 @@ public class ColorController implements Initializable {
     private TextField textFieldHex;
 
     @FXML
-    private Pane paneMain;
+    private Pane paneColorDisplay;
+
 
     @FXML
-    private Pane paneColorDisplay;
+    private CheckBox checkBoxEraser;
+
+    @FXML
+    private TextField textFieldBrushWidth;
+
+    @FXML
+    private Canvas canvasWhiteBoard;
+
+    private GraphicsContext gc;
+
+    private boolean isEraser = false;
 
 
     @Override
@@ -50,9 +66,14 @@ public class ColorController implements Initializable {
         color = new Color(0, 0, 0);
 
         updateColorPane();
+        updateCanvasPaint();
 
         initSliderListeners();
         initTextFieldListener();
+        initCanvasListener();
+
+        gc = canvasWhiteBoard.getGraphicsContext2D();
+
 
     }
 
@@ -145,10 +166,28 @@ public class ColorController implements Initializable {
         });
     }
 
+    private void initCanvasListener() {
+        canvasWhiteBoard.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> {
+                        gc.beginPath();
+                        gc.moveTo(event.getX(), event.getY());
+                        gc.stroke();
+                    });
+
+        canvasWhiteBoard.addEventHandler(MouseEvent.MOUSE_DRAGGED, event -> {
+                        gc.lineTo(event.getX(), event.getY());
+                        gc.stroke();
+                    });
+
+        canvasWhiteBoard.addEventHandler(MouseEvent.MOUSE_RELEASED, event -> {
+
+                    });
+    }
+
     private void update() {
         updateColorPane();
         updateTextFieldValue();
         updateSliderValue();
+        updateCanvasPaint();
     }
 
     private void updateColorPane() {
@@ -166,5 +205,16 @@ public class ColorController implements Initializable {
         sliderRed.setValue(color.getRed());
         sliderGreen.setValue(color.getGreen());
         sliderBlue.setValue(color.getBlue());
+    }
+
+    private void updateCanvasPaint() {
+        if(isEraser) return;
+
+        javafx.scene.paint.Color colorCanvas = new javafx.scene.paint.Color(color.getRed() / 255D, color.getGreen() / 255D, color.getBlue() / 255D, 1);
+        gc = canvasWhiteBoard.getGraphicsContext2D();
+        gc.setFill(colorCanvas);
+        gc.setStroke(colorCanvas);
+        gc.setLineWidth(5);
+
     }
 }
