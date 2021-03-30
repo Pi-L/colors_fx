@@ -7,6 +7,7 @@ import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 
+import java.awt.event.MouseEvent;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -37,33 +38,68 @@ public class ColorController implements Initializable {
     private TextField textFieldHex;
 
     @FXML
+    private Pane paneMain;
+
+    @FXML
     private Pane paneColorDisplay;
 
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
+        color = new Color(0, 0, 0);
+
+        updateColorPane();
+
         initSliderListeners();
+        initTextFieldListener();
 
 
     }
 
     private void initSliderListeners() {
         sliderRed.valueProperty().addListener((observableValue, oldValue, newValue) -> {
-            textFieldRed.textProperty().setValue(stringFromNumber(newValue));
+            color.setRed(newValue.intValue());
+            updateColorPane();
+            updateTextFieldValue();
         });
 
         sliderGreen.valueProperty().addListener((observableValue, oldValue, newValue) -> {
-            textFieldGreen.textProperty().setValue(stringFromNumber(newValue));
+            color.setGreen(newValue.intValue());
+            updateColorPane();
+            updateTextFieldValue();
         });
 
         sliderBlue.valueProperty().addListener((observableValue, oldValue, newValue) -> {
-            textFieldBlue.textProperty().setValue(stringFromNumber(newValue));
+            color.setBlue(newValue.intValue());
+            updateColorPane();
+            updateTextFieldValue();
         });
     }
 
     private void initTextFieldListener() {
-        // textFieldRed.setOnAction();
+
+        textFieldRed.textProperty().addListener((observableValue, oldValue, newValue) -> {
+
+        });
+    }
+
+//    private void setColorValues() {s
+//        int redValue = (int) sliderRed.getValue();
+//        int greenValue = (int) sliderRed.getValue();
+//        int blueValue = (int) sliderRed.getValue();
+//
+//    }
+
+    private void updateColorPane() {
+        paneColorDisplay.setStyle("-fx-background-color: " + color.getHexValue());
+    }
+
+    private void updateTextFieldValue() {
+        textFieldRed.textProperty().setValue(String.valueOf(color.getRed()));
+        textFieldGreen.textProperty().setValue(String.valueOf(color.getGreen()));
+        textFieldBlue.textProperty().setValue(String.valueOf(color.getBlue()));
+        textFieldHex.textProperty().setValue(color.getHexValue());
     }
 
     private String stringFromNumber(Number number) {
