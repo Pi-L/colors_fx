@@ -10,10 +10,10 @@
    <children>
       <Pane fx:id="paneMain" layoutX="12.0" layoutY="15.0" prefHeight="293.0" prefWidth="576.0" style="-fx-background-color: #f4f4f4;">
          <children>
-            <Slider fx:id="sliderRed" layoutX="48.0" layoutY="79.0" max="255.0" minorTickCount="1" prefHeight="15.0" prefWidth="204.0" snapToTicks="true" style="-fx-color: #FF0000;" />
+            <Slider fx:id="sliderRed" blockIncrement="1.0" layoutX="48.0" layoutY="79.0" max="255.0" minorTickCount="1" prefHeight="15.0" prefWidth="204.0" style="-fx-color: #FF0000;" />
             <Pane fx:id="paneColorDisplay" layoutX="340.0" layoutY="110.0" prefHeight="160.0" prefWidth="215.0" />
-            <Slider fx:id="sliderGreen" layoutX="48.0" layoutY="162.0" max="255.0" minorTickCount="1" prefHeight="15.0" prefWidth="204.0" snapToTicks="true" style="-fx-color: #00FF00;" />
-            <Slider fx:id="sliderBlue" layoutX="48.0" layoutY="238.0" max="255.0" minorTickCount="1" prefHeight="15.0" prefWidth="204.0" snapToTicks="true" style="-fx-color: #0000FF;" />
+            <Slider fx:id="sliderGreen" blockIncrement="1.0" layoutX="48.0" layoutY="162.0" max="255.0" minorTickCount="1" prefHeight="15.0" prefWidth="204.0" style="-fx-color: #00FF00;" />
+            <Slider fx:id="sliderBlue" blockIncrement="1.0" layoutX="48.0" layoutY="238.0" max="255.0" minorTickCount="1" prefHeight="15.0" prefWidth="204.0" style="-fx-color: #0000FF;" />
             <Label layoutX="48.0" layoutY="57.0" text="Red" />
             <Label layoutX="48.0" layoutY="139.0" text="Green" />
             <Label layoutX="48.0" layoutY="216.0" text="Blue" />

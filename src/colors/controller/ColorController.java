@@ -54,26 +54,33 @@ public class ColorController implements Initializable {
         initSliderListeners();
         initTextFieldListener();
 
-
     }
 
     private void initSliderListeners() {
         sliderRed.valueProperty().addListener((observableValue, oldValue, newValue) -> {
+
+            if(newValue == null || newValue.equals(oldValue))  return;
+
             color.setRed(newValue.intValue());
-            updateColorPane();
-            updateTextFieldValue();
+            update();
         });
 
         sliderGreen.valueProperty().addListener((observableValue, oldValue, newValue) -> {
+
+            if(newValue == null || newValue.equals(oldValue))  return;
+
             color.setGreen(newValue.intValue());
-            updateColorPane();
-            updateTextFieldValue();
+            update();
+
         });
 
         sliderBlue.valueProperty().addListener((observableValue, oldValue, newValue) -> {
+
+            if(newValue == null || newValue.equals(oldValue))  return;
+
             color.setBlue(newValue.intValue());
-            updateColorPane();
-            updateTextFieldValue();
+            update();
+
         });
     }
 
@@ -81,15 +88,68 @@ public class ColorController implements Initializable {
 
         textFieldRed.textProperty().addListener((observableValue, oldValue, newValue) -> {
 
+            if(newValue == null || newValue.equals(oldValue))  return;
+
+            try {
+                color.setRed(Integer.parseInt(newValue));
+                textFieldRed.setStyle("-fx-border-color: none");
+                update();
+
+            } catch (IllegalArgumentException e) {
+                textFieldRed.setStyle("-fx-border-color: #FF0000");
+            }
+
+        });
+
+        textFieldGreen.textProperty().addListener((observableValue, oldValue, newValue) -> {
+
+            if(newValue == null || newValue.equals(oldValue))  return;
+
+            try {
+                color.setGreen(Integer.parseInt(newValue));
+                textFieldGreen.setStyle("-fx-border-color: none");
+                update();
+
+            } catch (IllegalArgumentException e) {
+                textFieldGreen.setStyle("-fx-border-color: #FF0000");
+            }
+
+        });
+
+        textFieldBlue.textProperty().addListener((observableValue, oldValue, newValue) -> {
+
+            if(newValue == null || newValue.equals(oldValue))  return;
+
+            try {
+                color.setBlue(Integer.parseInt(newValue));
+                textFieldBlue.setStyle("-fx-border-color: none");
+                update();
+
+            } catch (IllegalArgumentException e) {
+                textFieldBlue.setStyle("-fx-border-color: #FF0000");
+            }
+
+        });
+
+        textFieldHex.textProperty().addListener((observableValue, oldValue, newValue) -> {
+
+            if(newValue != null && !newValue.equals(oldValue)) {
+                try {
+                    color.setHexValue(newValue.toUpperCase());
+                    textFieldHex.setStyle("-fx-border-color: none");
+                    update();
+                } catch (IllegalArgumentException e) {
+                    textFieldHex.setStyle("-fx-border-color: #FF0000");
+                }
+            }
         });
     }
 
-//    private void setColorValues() {s
-//        int redValue = (int) sliderRed.getValue();
-//        int greenValue = (int) sliderRed.getValue();
-//        int blueValue = (int) sliderRed.getValue();
-//
-//    }
+    private void update() {
+        updateColorPane();
+        updateTextFieldValue();
+        updateSliderValue();
+    }
 
     private void updateColorPane() {
         paneColorDisplay.setStyle("-fx-background-color: " + color.getHexValue());
@@ -102,7 +162,9 @@ public class ColorController implements Initializable {
         textFieldHex.textProperty().setValue(color.getHexValue());
     }
 
-    private String stringFromNumber(Number number) {
-        return String.valueOf(number.intValue());
+    private void updateSliderValue() {
+        sliderRed.setValue(color.getRed());
+        sliderGreen.setValue(color.getGreen());
+        sliderBlue.setValue(color.getBlue());
     }
 }
