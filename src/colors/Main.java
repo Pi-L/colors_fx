@@ -9,19 +9,21 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
 
-    private Image icon;
-
-
-    public Main() {
-        icon = new Image(Main.class.getResource("/resources/colorWheelIcon.png").toExternalForm());
-    }
 
     @Override
     public void start(Stage primaryStage) throws Exception{
 
         Parent root = FXMLLoader.load(getClass().getResource("view/colorView.fxml"));
         primaryStage.setTitle("Color App");
-        primaryStage.getIcons().add(icon);
+
+        primaryStage.getIcons().add(new Image("/resources/colorWheelIcon.png"));
+       primaryStage.getIcons().add(new Image("/resources/apple-icon.png"));
+        primaryStage.getIcons().add(new Image(Main.class.getResourceAsStream("/resources/icon16.png")));
+         primaryStage.getIcons().add(new Image("file:icon32.png"));
+        primaryStage.getIcons().add(new Image("/resources/icon150.png"));
+        primaryStage.getIcons().add(new Image("/resources/icon192.png"));
+        primaryStage.getIcons().add(new Image("/resources/icon512.png"));
+
         primaryStage.setScene(new Scene(root));
 
         primaryStage.show();
