@@ -15,6 +15,8 @@ import javafx.scene.paint.Paint;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ColorController implements Initializable {
 
@@ -58,6 +60,8 @@ public class ColorController implements Initializable {
     private GraphicsContext gc;
 
     private boolean isEraser = false;
+
+    private double brushWidth = 12;
 
 
     @Override
@@ -187,6 +191,31 @@ public class ColorController implements Initializable {
             isEraser = newValue;
             updateCanvasPaint();
         });
+
+        textFieldBrushWidth.textProperty().addListener((observableValue, oldValue, newValue) -> {
+
+            if(newValue == null || newValue.equals(oldValue))  return;
+
+            try {
+                Pattern pattern = Pattern.compile("^\\d{1,2}$");
+                Matcher matcher = pattern.matcher(newValue);
+
+                if(!matcher.matches()) throw new IllegalArgumentException();
+
+                int width = Integer.parseInt(newValue, 10);
+
+
+                if(width <= 0 || width > 99) throw new IllegalArgumentException();
+
+                brushWidth = width;
+
+                update();
+
+            } catch (IllegalArgumentException e) {
+                textFieldBrushWidth.setStyle("-fx-border-color: #FF0000");
+            }
+
+        });
     }
 
     private void update() {
@@ -236,7 +265,7 @@ public class ColorController implements Initializable {
 
         gc.setFill(colorCanvas);
         gc.setStroke(colorCanvas);
-        gc.setLineWidth(5);
+        gc.setLineWidth(brushWidth);
 
     }
 }
